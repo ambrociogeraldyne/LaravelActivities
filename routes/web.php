@@ -28,7 +28,7 @@ Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
 Route::get('/posts/{id}', [PostController::class, 'show']);
 Route::get('/posts/{id}/edit', [PostController::class, 'edit']);
 Route::patch('/posts/{id}', [PostController::class, 'update'])->name('posts.update')->middleware('auth');
-Route::delete('/posts/{id}', [PostController::class, 'destroy'])->name('posts.destroy')->middleware('auth');;
+Route::delete('/posts/{id}', [PostController::class, 'destroy'])->name('posts.destroy')->middleware('auth');
 
 //Auth::routes();
 
