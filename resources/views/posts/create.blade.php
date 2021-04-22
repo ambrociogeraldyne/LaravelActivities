@@ -18,7 +18,7 @@
                         </div>
                     @endif
 
-                    <form method="POST" action="{{ route('posts.store') }}">
+                    <form method="POST" action="{{ route('posts.store') }}" enctype="multipart/form-data">
                         @csrf
                         
                         <div class="form-group row">
@@ -41,11 +41,25 @@
                             <label for="description" class="col-md-4 col-form-label text-md-right">{{ __('Description') }}</label>
 
                             <div class="col-md-6">
-                                <textarea class="form-control @error('description') is-invalid @enderror" name="description" value="{{ old('description') }}"  autocomplete="description">
-                                </textarea>    
+                                <textarea class="form-control @error('description') is-invalid @enderror" name="description" value="{{ old('description') }}"  autocomplete="description"></textarea>    
                             </div>
 
                             @error('description')
+                                <span class="invalid-feedback" role="alert"> 
+                                    {{ $message }}
+                                </span>                            
+                            @enderror
+
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="img" class="col-md-4 col-form-label text-md-right">{{ __('Upload Image') }}</label>
+
+                            <div class="col-md-6">
+                                <input type="file" class="form-control-file @error('img') is-invalid @enderror" name="img" value="{{ old('img') }}"  autocomplete="img"> 
+                            </div>
+
+                            @error('img')
                                 <span class="invalid-feedback" role="alert"> 
                                     {{ $message }}
                                 </span>                            

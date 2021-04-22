@@ -14,6 +14,8 @@
                     Title: {{ $post->title }} <br>
                     Description: {{ $post->description }} <br>
                     Created At: {{ $post->created_at }} <br>
+                    Post Image:
+                    <br><img src="{{ asset('/storage/img/'.$post->img) }}">
                 </div>
             </div>
         </div>

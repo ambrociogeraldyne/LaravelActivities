@@ -43,10 +43,27 @@ class PostController extends Controller
             'title' => 'required|max:100',
             'description' => 'required'         
         ]);
+
+        if($request->hasFile('img')){
+            
+            $filenameWithExt = $request->file('img')->getClientOriginalName();
+            
+            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+
+            $extension = $request->file('img')->getClientOriginalExtension();
+
+            $filenameToStore = $filename.'_'.time().'.'.$extension;
+
+            $path = $request->file('img')->storeAs('public/img', $filenameToStore);
+        } else{
+
+            $filenameToStore = '';
+        }
         //
         $post = new Post();
         $post->title = $request->title;
         $post->description = $request->description;
+        $post->img = $filenameToStore;
         $post->save();
 
         return redirect('/posts');
