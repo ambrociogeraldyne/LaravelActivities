@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;    
+use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
@@ -16,8 +17,11 @@ class PostController extends Controller
     public function index()
     {
         //
-        $posts = Post::get();
-        return view('posts.index', compact('posts'));
+        $user = User::find(Auth::id());
+        $posts = $user->posts()->where('title','!=','')->get();
+        $count = $user->posts()->where('title','!=','')->count();
+
+        return view('posts.index', compact('posts', 'count'));
     }
 
     /**
@@ -61,12 +65,15 @@ class PostController extends Controller
         }
         //
         $post = new Post();
-        $post->title = $request->title;
-        $post->description = $request->description;
+        $post->fill($request->all());
         $post->img = $filenameToStore;
-        $post->save();
-
-        return redirect('/posts');
+        //$post->user_id = Auth::id();
+        $post->user_id = auth()->user()->id;
+        if($post->save()){
+            $message = "Successfully save!";
+        }
+        
+        return redirect('/posts')->with('message', $message);
     }
 
     /**
@@ -79,7 +86,9 @@ class PostController extends Controller
     {
         //
         $post = Post::find($id);
-        return view('posts.show', compact('post'));
+        $comments = $post->comments;
+
+        return view('posts.show', compact('post', 'comments'));
     }
 
     /**
@@ -110,8 +119,7 @@ class PostController extends Controller
         ]);
         //
         $post = Post::find($id);
-        $post->title = $request->title;
-        $post->description = $request->description;
+        $post->fill($request->all());
         $post->save();
 
         return redirect('/posts');
@@ -128,6 +136,30 @@ class PostController extends Controller
         //
         $post = Post::find($id);
         $post->delete();
+
+        return redirect('/posts');
+    }
+
+    /* Permanently delete data */
+    public function deleteBlank()
+    {
+        $delete = Post::where('title','=','')->delete();
+
+        return redirect('/posts');
+    }
+
+    /* Stores deleted posts */
+    public function archive()
+    {
+        $posts = Post::onlyTrashed()->get();
+
+        return view('posts.archive', compact('posts'));
+    }
+
+    /* Restore posts */
+    public function restore($id)
+    {
+        $post = Post::withTrashed()->find($id)->restore();
 
         return redirect('/posts');
     }

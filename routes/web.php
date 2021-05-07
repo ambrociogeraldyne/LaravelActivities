@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\CommentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,22 +16,19 @@ use App\Http\Controllers\PostController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('index');
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/home', function(){
+    return redirect('/posts');
+});
 
-Route::get('/posts', [PostController::class, 'index']);
-Route::get('/posts/create', [PostController::class, 'create'])->middleware('auth');
-Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
-Route::get('/posts/{id}', [PostController::class, 'show']);
-Route::get('/posts/{id}/edit', [PostController::class, 'edit']);
-Route::patch('/posts/{id}', [PostController::class, 'update'])->name('posts.update')->middleware('auth');
-Route::delete('/posts/{id}', [PostController::class, 'destroy'])->name('posts.destroy')->middleware('auth');
+/*Route Posts*/
+Route::resource('/posts', App\Http\Controllers\PostController::class);
+Route::get('/delete-blank-post', [App\Http\Controllers\PostController::class, 'deleteBlank']);
+Route::get('/posts-archive', [App\Http\Controllers\PostController::class, 'archive']);
+Route::get('/posts/{id}/restore', [App\Http\Controllers\PostController::class, 'restore'])->name('posts.restore');
 
-//Auth::routes();
-
-//Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+/*Route Comment*/
+Route::resource('/comments', App\Http\Controllers\CommentController::class);
