@@ -7,7 +7,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
 
-            <a class="btn button btn-info" href="/posts/create">Create New</a>
+            <a class="btn button btn-warning" href="/posts/{{$post->id}}/edit">Edit Post</a>
             <br><br>
             <div class="card">       
                 <div class="card-body">
